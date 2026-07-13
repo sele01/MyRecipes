@@ -41,7 +41,7 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 # Which hosts/domains can serve this application
 # Prevents HTTP Host header attacks
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1", "food-recipes-rouge.vercel.app").split(",")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 # ============================================
 # APPLICATION DEFINITION
@@ -287,39 +287,42 @@ if not os.path.exists(STATIC_ROOT):
 # ============================================
 # PRODUCTION SECURITY SETTINGS
 # ============================================
-# Tell Django it's behind a proxy
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-USE_X_FORWARDED_HOST = True
-SECURE_SSL_REDIRECT = False  # Don't redirect, Railway already did
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# ---- Environment-Aware Settings ----
 
+ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
 
-SESSION_COOKIE_DOMAIN = ".railway.app"
-CSRF_COOKIE_DOMAIN = ".railway.app"
+SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE", "False") == "True"
+CSRF_COOKIE_SECURE = os.environ.get("CSRF_COOKIE_SECURE", "False") == "True"
+SESSION_COOKIE_DOMAIN = os.environ.get("SESSION_COOKIE_DOMAIN", None)
+CSRF_COOKIE_DOMAIN = os.environ.get("CSRF_COOKIE_DOMAIN", None)
 
+if ENVIRONMENT == "production":
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    USE_X_FORWARDED_HOST = True
+else:
+    SECURE_PROXY_SSL_HEADER = None
+    USE_X_FORWARDED_HOST = False
 
-# Security settings - only active when DEBUG=False
-# Security settings - only active when DEBUG=False
-if not DEBUG:
-    # HTTPS settings
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+# ---- Production Security Headers ----
+if ENVIRONMENT == "production":
     SECURE_SSL_REDIRECT = True
-
-    # HSTS (HTTP Strict Transport Security)
-    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-
-    # Other security headers
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = "DENY"
-
-    # Trusted origins for CSRF
     CSRF_TRUSTED_ORIGINS = [
         "https://*.railway.app",
         "https://*.up.railway.app",
         "https://food-recipes-production.up.railway.app",
-    ]  # domain name
+    ]
+else:
+    SECURE_SSL_REDIRECT = False
+    SECURE_HSTS_SECONDS = 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False
+    SECURE_CONTENT_TYPE_NOSNIFF = False
+    SECURE_BROWSER_XSS_FILTER = False
+    X_FRAME_OPTIONS = "SAMEORIGIN"   # Less strict for local dev
+    CSRF_TRUSTED_ORIGINS = []
