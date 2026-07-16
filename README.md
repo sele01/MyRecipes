@@ -1,6 +1,8 @@
 # 🍽️ Food Recipes Platform
 
 A full-featured recipe sharing platform built with Django. Users can create, share, and discover recipes, with social features like likes, comments, bookmarks, and ratings.
+
+
 **Like Link** [MyRecipes](https://myrecipes-sage.vercel.app/)
 
 ![Django](https://img.shields.io/badge/Django-4.2.28-green)
