@@ -34,10 +34,6 @@ class HomeView(TemplateView):
             context['user_count'] = User.objects.count()
         except Exception:
             context['user_count'] = 0
-        # Featured recipes (latest 6)
-        context['featured_recipes'] = Recipe.objects.filter(is_published=True).order_by('-created_at')[:6]
 
-        # Categories
-        context['categories'] = Category.objects.all()
 
         return context
