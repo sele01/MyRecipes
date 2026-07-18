@@ -11,7 +11,7 @@
       "dest": "config/wsgi.py"
     }
   ],
-  "buildCommand": "python manage.py collectstatic --noinput"
+  "buildCommand": "rm -rf staticfiles/ && python manage.py collectstatic --noinput"
 
 }
 
