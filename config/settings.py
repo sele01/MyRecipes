@@ -269,7 +269,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Only show debug toolbar to these IPs
 INTERNAL_IPS = ["127.0.0.1"]
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.StaticFilesStorage"
+
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ============================================
 # EMAIL SETTINGS
