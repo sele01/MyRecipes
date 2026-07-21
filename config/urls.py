@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from core.views import custom_404_view, custom_500_view
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -11,8 +12,13 @@ urlpatterns = [
     path("", include("core.urls")),  # We'll add core and recipes URLs later
     path("recipes/", include("recipes.urls")),
     path("notifications/", include("notifications.urls")),
+
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# custom error handlers
+handler404 = "core.views.custom_404_view"
+handler500 = "core.views.custom_500_view"

@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 from recipes.models import Recipe, Category
 from django.contrib.auth import get_user_model
+from django.shortcuts import render
 
 User = get_user_model()
 
@@ -37,3 +38,14 @@ class HomeView(TemplateView):
 
 
         return context
+
+
+def custom_404_view(request, exception):
+    """Custom 404 error handler that renders a user-friendly 404 page."""
+    return render(request, '404.html', status=404)
+
+
+def custom_500_view(request):
+    """Custom 500 error handler that renders a user-friendly 500 page."""
+    return render(request, '500.html', status=500)
+
